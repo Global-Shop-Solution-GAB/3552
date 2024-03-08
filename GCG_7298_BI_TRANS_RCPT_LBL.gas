@@ -1,0 +1,310 @@
+Program.Sub.ScreenSU.Start
+Program.Sub.ScreenSU.End
+
+Program.Sub.Preflight.Start
+
+Variable.UDT.uLabels.Define("PART",String,PART)
+Variable.UDT.uLabels.Define("DESCRIPTION",String,DESCRIPTION)
+Variable.UDT.uLabels.Define("LOT",String,LOT)
+Variable.UDT.uLabels.Define("LOCATION",String,LOCATION)
+Variable.UDT.uLabels.Define("BIN",String,BIN)
+Variable.UDT.uLabels.Define("HEAT",String,HEAT)
+Variable.UDT.uLabels.Define("SERIAL",String,SERIAL)
+Variable.UDT.uLabels.Define("LENGTH",String,LENGTH)
+Variable.UDT.uLabels.Define("WIDTH",String,WIDTH)
+Variable.UDT.uLabels.Define("RUN_ID",String,RUN_ID)
+Variable.UDT.uLabels.Define("JOB",String,JOB)
+Variable.UDT.uLabels.Define("SUFFIX",String,SUFFIX)
+Variable.UDT.uLabels.Define("SEQUENCE",String,SEQUENCE)
+Variable.UDT.uLabels.Define("PO",String,PO)
+Variable.UDT.uLabels.Define("PO_LINE",String,PO_LINE)
+Variable.UDT.uLabels.Define("UM_LEN",String,UM_LEN)
+Variable.UDT.uLabels.Define("UM_WID",String,UM_WID)
+Variable.UDT.uLabels.Define("UM_INV",String,UM_INV)
+Variable.UDT.uLabels.Define("QTY_ONHAND",String,QTY_ONHAND)
+Variable.UDT.uLabels.Define("TRANSIT_NUM",String,TRANSIT_NUM)
+Variable.UDT.uLabels.Define("SALES_ORDER",String,SALES_ORDER)
+Variable.uGlobal.uLabels.Declare("uLabels")
+
+Program.Sub.Preflight.End
+
+Program.Sub.Main.Start
+F.Intrinsic.Control.SetErrorHandler("Main_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+'Coded by SFF
+'12/10/2015
+'preproc for Transit Receipt label
+'Inventory>Transactions>Transit Receipts - Post Save BI Label Hook(Pre Clear)
+
+V.uGlobal.uLabels.Redim(-1,-1)
+F.Intrinsic.Control.CallSub(Connections)
+
+'Get data fom grid
+F.Intrinsic.Control.CallSub(Getdata)
+
+'only do additional tasks if data exists.
+F.Intrinsic.Control.If(V.uGlobal.uLabels.UBound,<>,-1)
+	'Loop through UDT and get Dims for each ordinal in UDT
+	F.Intrinsic.Control.CallSub(Getdims)
+	'Get addl data, description,extended text description, etc
+	F.Intrinsic.Control.CallSub(Getaddldata)
+	'print labels
+	F.Intrinsic.Control.CallSub(Print_labels)
+F.intrinsic.control.endif
+
+'End Program
+F.Intrinsic.Control.End
+
+F.Intrinsic.Control.Label("Main_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GCG_7298_BI_TRANS_RCPT_LBL.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+Function.Intrinsic.Control.EndIf
+
+
+Program.Sub.Main.End
+
+Program.Sub.Print_Labels.Start
+F.Intrinsic.Control.SetErrorHandler("Print_Labels_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+V.Local.iRptID.Declare(Long)
+V.Local.iBIRunID.Declare(Long)
+V.Local.iBILogID.Declare(Long)
+'Print labels from UDT
+
+F.Global.BI.GetIDFromName("GCG_7298_TRANS_RCPT.lab",V.Local.iRptID)
+
+f.Global.BI.GetRunID(v.Local.iBIRunID)
+f.Global.BI.StartLogging(v.Local.iBIRunID,v.Local.iRptID,0,"",v.Local.iBILogID)
+
+F.Intrinsic.Variable.UDTSetMemberValue(V.uGlobal.uLabels!RUN_ID,V.Local.iBIRunID.String)
+
+f.Global.BI.PrintCodeSoftLabelFromUDT(V.Local.iBIRunID,v.Local.iBILogID,"uGlobal.uLabels","PART*!*DESCRIPTION*!*LOCATION*!*LOT*!*BIN*!*HEAT*!*SERIAL*!*LENGTH*!*WIDTH*!*RUN_ID*!*JOB*!*SUFFIX*!*SEQUENCE*!*PO*!*PO_LINE*!*UM_LEN*!*UM_WID*!*UM_INV*!*QTY_ONHAND*!*TRANSIT_NUM*!*SALES_ORDER","",True)
+
+F.Intrinsic.Control.ExitSub
+
+
+F.Intrinsic.Control.Label("Print_Labels_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GCG_7298_BI_TRANS_RCPT_LBL.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+Function.Intrinsic.Control.EndIf
+
+
+Program.Sub.Print_Labels.End
+
+Program.Sub.Connections.Start
+F.Intrinsic.Control.SetErrorHandler("Connections_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+
+V.Local.sCon.Declare(String)
+'Remove _ if it is not within your DSNs.
+F.Intrinsic.String.Concat("Global_",V.Caller.CompanyCode,V.Local.sCon)
+F.ODBC.Connection!conX.OpenConnection(V.Local.sCon,"Master","master")
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("Connections_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GCG_7298_BI_TRANS_RCPT_LBL.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+Function.Intrinsic.Control.EndIf
+
+
+Program.Sub.Connections.End
+
+Program.Sub.Getdata.Start
+F.Intrinsic.Control.SetErrorHandler("Getdata_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+'load UDT with info from Grid where qty recieved > 0
+V.Local.sRow.Declare(String)
+V.Local.i.Declare(Long)
+V.Local.iUB.Declare(Long)
+V.Local.iRows.Declare(Long)
+
+'Read bdf on Grid from Transit Receipts screen,  for each line, when Qty Received is > 0, then record line in UDT,
+F.Intrinsic.BDF.Load("AUX001","AUX001")
+F.Intrinsic.BDF.ReadRowCount("AUX001",V.Local.iRows)
+F.Intrinsic.Math.Sub(V.Local.iRows,1,V.Local.iRows)
+
+F.Intrinsic.Control.For(V.Local.i,0,V.Local.iRows,1)
+	F.Intrinsic.BDF.ReadRow("AUX001",V.Local.i,V.Local.sRow)
+	F.Intrinsic.String.Split(V.Local.sRow,"|~|",V.Local.sRow)
+	F.Intrinsic.Control.If(V.Local.sRow(9).Float,>,0)
+		'resize UDT
+		F.Intrinsic.Control.If(V.uGlobal.uLabels.UBound,=,-1)
+			V.uGlobal.uLabels.Redim(0,0)
+			V.Local.iUB.Set(0)
+		F.Intrinsic.Control.Else
+			F.Intrinsic.Math.Add(V.Local.iUB,1,V.Local.iUB)
+			V.uGlobal.uLabels.RedimPreserve(V.uGlobal.uLabels.LBound,V.Local.iUB)
+		F.Intrinsic.Control.EndIf
+
+		'Set ordinals iUB of UDT with Current Row info
+		V.uGlobal.uLabels(v.Local.iUB)!PART.Set(V.Local.sRow(2).Trim)
+		V.uGlobal.uLabels(v.Local.iUB)!LOCATION.Set(V.Passed.000001)
+		V.uGlobal.uLabels(v.Local.iUB)!LOT.Set(V.Local.sRow(5).Trim)
+		V.uGlobal.uLabels(v.Local.iUB)!BIN.Set(V.Local.sRow(4).Trim)
+		V.uGlobal.uLabels(v.Local.iUB)!HEAT.Set(V.Local.sRow(6).Trim)
+		V.uGlobal.uLabels(v.Local.iUB)!SERIAL.Set(V.Local.sRow(7).Trim)
+		V.uGlobal.uLabels(v.Local.i)!TRANSIT_NUM.Set(V.Passed.000094)
+		V.uGlobal.uLabels(v.Local.i)!SALES_ORDER.Set(V.Passed.000147)
+	F.Intrinsic.Control.EndIf
+F.Intrinsic.Control.Next(V.Local.i)
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("Getdata_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GCG_7298_BI_TRANS_RCPT_LBL.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+Function.Intrinsic.Control.EndIf
+
+
+Program.Sub.Getdata.End
+
+Program.Sub.GetDims.Start
+F.Intrinsic.Control.SetErrorHandler("GetDims_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+'Loop through UDT and get Dims from ITEM_MAST_DIMS for each ordinal
+
+V.Local.i.Declare(Long)
+V.Local.sSQl.Declare(String)
+
+F.Intrinsic.Control.For(V.Local.i,V.uGlobal.uLabels.LBound,V.uGlobal.uLabels.UBound,1)
+	'Select based on lot bin heat serial
+	F.Intrinsic.String.Build("Select * from v_ITEM_MAST_DIMS where PART = '{0}' and LOCN = '{1}' and LOT = '{2}' and BIN = '{3}' and HEAT = '{4}' and SERIAL_NUMBER = '{5}' ",V.uGlobal.uLabels(v.Local.i)!PART,V.uGlobal.uLabels(v.Local.i)!LOCATION,V.uGlobal.uLabels(v.Local.i)!LOT,V.uGlobal.uLabels(v.Local.i)!BIN,V.uGlobal.uLabels(v.Local.i)!HEAT,V.uGlobal.uLabels(v.Local.i)!SERIAL,V.Local.sSQl)
+	F.ODBC.Connection!conX.OpenRecordsetRO("rst",V.Local.sSQl)
+	F.Intrinsic.Control.If(V.ODBC.conX!rst.EOF,<>,True)
+		V.uGlobal.uLabels(v.Local.i)!QTY_ONHAND.Set(V.ODBC.conX!rst.FieldValFloat!ONHAND_TOTAL)
+		V.uGlobal.uLabels(v.Local.i)!LENGTH.Set(V.ODBC.conX!rst.FieldValFloat!ONHAND_LENGTH)
+		V.uGlobal.uLabels(v.Local.i)!WIDTH.Set(V.ODBC.conX!rst.FieldValFloat!ONHAND_WIDTH)
+		V.uGlobal.uLabels(v.Local.i)!UM_LEN.Set(V.ODBC.conX!rst.FieldValTrim!UM_LENGTH)
+		V.uGlobal.uLabels(v.Local.i)!UM_WID.Set(V.ODBC.conX!rst.FieldValTrim!UM_WIDTH)
+	F.Intrinsic.Control.EndIf
+	F.ODBC.conX!rst.Close
+F.Intrinsic.Control.Next(V.Local.i)
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("GetDims_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GCG_7298_BI_TRANS_RCPT_LBL.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+Function.Intrinsic.Control.EndIf
+
+
+Program.Sub.GetDims.End
+
+Program.Sub.GetAddlData.Start
+F.Intrinsic.Control.SetErrorHandler("GetAddlData_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+'Get other info related to each part. like description
+
+'V.Local.i.Declare(Long)
+'V.Local.sSql.Declare(String)
+'
+'F.Intrinsic.Control.For(V.Local.i,V.uGlobal.uLabels.LBound,V.uGlobal.uLabels.UBound,1)
+'	F.Intrinsic.String.Build("Select * from v_INVENTORY_MSTR where PART = '{0}' and LOCATION = '{1}' ",V.uGlobal.uLabels(v.Local.i)!PART,V.uGlobal.uLabels(v.Local.i)!LOCATION,V.Local.sSql)
+'	F.ODBC.Connection!conX.OpenRecordsetRO("rst",V.Local.sSql)
+'	F.Intrinsic.Control.If(V.ODBC.conX!rst.EOF,<>,True)
+'		V.uGlobal.uLabels(v.Local.i)!DESCRIPTION.Set(V.ODBC.conX!rst.FieldValTrim!DESCRIPTION)
+'		V.uGlobal.uLabels(v.Local.i)!UM_INV.Set(V.ODBC.conX!rst.FieldValTrim!UM_INVENTORY)
+'	F.Intrinsic.Control.EndIf
+'	F.ODBC.conX!rst.Close
+'F.Intrinsic.Control.Next(V.Local.i)
+
+'Get Extra Text for part extended description?
+
+V.Local.i.Declare(Long)
+V.Local.sSql.Declare(String)
+V.Local.sRet.Declare(String)
+V.Local.sDesc.Declare(String)
+V.Local.iBIRunID.Declare(Long)
+V.Local.iRptID.Declare(Long)
+V.Local.iBILogID.Declare(Long)
+
+'Print Labels from UDT
+
+'loop through and build the desc,alt1,alt2,extra text together for entire description passed to label
+F.Intrinsic.Control.For(V.Local.i,V.uGlobal.uLabels.LBound,V.uGlobal.uLabels.UBound,1)
+
+	V.Local.sRet.Set("")
+	V.Local.sDesc.Set("")
+
+	'Get Desc
+	F.Intrinsic.String.Build("Select * from v_INVENTORY_MSTR where PART = '{0}' and LOCATION = '{1}'",V.uGlobal.uLabels(v.Local.i)!PART,V.uGlobal.uLabels(v.Local.i)!LOCATION,V.Local.sSql)
+	F.ODBC.Connection!conX.OpenRecordsetRO("rstL",V.Local.sSql)
+	F.Intrinsic.Control.If(V.ODBC.conX!rstL.EOF,<>,True)
+		V.Local.sDesc.Set(V.ODBC.conX!rstL.FieldValTrim!DESCRIPTION)
+		'Set UM_INVENTORY
+		V.uGlobal.uLabels(v.Local.i)!UM_INV.Set(V.ODBC.conX!rstL.FieldValTrim!UM_INVENTORY)
+	F.Intrinsic.Control.EndIf
+	F.ODBC.conX!rstL.Close
+
+	'Get alt 1 and Alt 2 description
+	F.Intrinsic.String.Build("Select * from v_INVENTORY_MST2 where PART = '{0}' and LOCATION = '{1}'",V.uGlobal.uLabels(v.Local.i)!LOCATION,V.Local.sSql)
+	F.ODBC.Connection!conX.OpenRecordsetRO("rstL",V.Local.sSql)
+	F.Intrinsic.Control.If(V.ODBC.conX!rstL.EOF,<>,True)
+		F.Intrinsic.String.Build("{0} {1} {2}",V.Local.sDesc.Trim,V.ODBC.conX!rstL.FieldValTrim!DESCRIPTION_2,V.ODBC.conX!rstL.FieldValTrim!DESCRIPTION_3,V.Local.sDesc)
+	F.Intrinsic.Control.EndIf
+	F.ODBC.conX!rstL.Close
+
+	'Get Extended Desciption
+	F.Intrinsic.String.Build("select ltrim(rtrim(TEXT_LINE1))+ ' ' + ltrim(rtrim(TEXT_LINE2)) + ' ' + ltrim(rtrim(TEXT_LINE3)) + ' ' + ltrim(rtrim(TEXT_LINE4)) + ' ' + ltrim(rtrim(TEXT_LINE5)) as TEXT_PART from v_EXTRA_TEXT where PART = '{0}' Order by TEXT_SEQUENCE",V.uGlobal.uLabels(v.Local.i)!PART,V.Local.sSql)
+	F.ODBC.Connection!conX.OpenRecordsetRO("rstL",V.Local.sSql)
+	F.Intrinsic.Control.If(V.ODBC.conX!rstL.EOF,<>,True)
+		F.Intrinsic.Control.DoUntil(V.ODBC.conX!rstL.EOF,=,True)
+			F.Intrinsic.String.Build("{0} {1}",V.Local.sRet,V.ODBC.conX!rstL.FieldValTrim!TEXT_PART,V.Local.sRet)
+			F.ODBC.conX!rstL.MoveNext
+		F.Intrinsic.Control.Loop
+	F.Intrinsic.Control.EndIf
+	F.ODBC.conX!rstL.Close
+	
+	'Build entire description including Description,Alt 1, Alt 2, Extra Text
+	F.Intrinsic.Control.If(V.Local.sRet.Trim,<>,"")
+		F.Intrinsic.String.Build("{0} {1}",V.Local.sDesc.Trim,V.Local.sRet,V.Local.sDesc)
+	F.Intrinsic.Control.EndIf
+
+	'Set final Entire Description
+	V.uGlobal.uLabels(v.Local.i)!DESCRIPTION.Set(V.Local.sDesc)
+	
+F.Intrinsic.Control.Next(V.Local.i)
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("GetAddlData_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GCG_7298_BI_TRANS_RCPT_LBL.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+Function.Intrinsic.Control.EndIf
+
+
+Program.Sub.GetAddlData.End
+
+Program.Sub.Comments.Start
+${$0$}$GCG_7298_BI_TRANS_RCPT_LBL$}$SILAS FULSOM$}$12/10/2015
+${$2$}$$}$$}$1$}$4$}$Label$}$12/10/2015 8:56:32 AM$}$GCG_TRANS_RCPT.lab
+${$3$}$0$}$$}$-1$}$-1$}$$}$1/1/1900$}$Transit receipt label preprocessor for MIR, quote 7298.
+
+Ran on Post-save-BI hook, added by core to fire after save but before grid clears.
+
+Program will read BDF and for each lot bin heat serial, get dimensions from ITEM MAST DIMS table and load to UDT.
+
+Call BI Print Labels from UDT function to print all labels in UDT that are actually received.
+
+
+Program.Sub.Comments.End
+
