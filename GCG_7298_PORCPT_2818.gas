@@ -1,0 +1,306 @@
+Program.Sub.ScreenSU.Start
+Program.Sub.ScreenSU.End
+
+Program.Sub.Preflight.Start
+
+Variable.Global.iBIRunID.Declare(Long,-1)
+Variable.Global.iBILogID.Declare(Long,-1)
+Variable.UDT.uPORcpt.Define("PO",String,"PO")
+Variable.UDT.uPORcpt.Define("PO_LINE",String,"PO_LINE")
+Variable.UDT.uPORcpt.Define("SEQ",String,"SEQ")
+Variable.UDT.uPORcpt.Define("RECEIVER_NO",String,"RECEIVED_NO")
+Variable.UDT.uPORcpt.Define("RECEIVED_DATE",Date,"RECEIVED_DATE")
+Variable.UDT.uPORcpt.Define("LBL_CREATE_DATE",Date,"LBL_CREATE_DATE")
+Variable.UDT.uPORcpt.Define("PART",String,"PART")
+Variable.UDT.uPORcpt.Define("LOCN",String,"LOCN")
+Variable.UDT.uPORcpt.Define("PROD_LINE",String,"PROD_LINE")
+Variable.UDT.uPORcpt.Define("DESCR",String,"DESCR")
+Variable.UDT.uPORcpt.Define("PO_QTY_ORDERED",Float,"PO_QTY_ORDERED")
+Variable.UDT.uPORcpt.Define("INV_QTY_ORDERED",Float,"INV_QTY_ORDERED")
+Variable.UDT.uPORcpt.Define("PO_QTY_TO_INSP",Float,"PO_QTY_TO_INSP")
+Variable.UDT.uPORcpt.Define("INV_QTY_TO_INSP",Float,"INV_QTY_TO_INSP")
+Variable.UDT.uPORcpt.Define("PO_QTY_REC",Float,"PO_QTY_REC")
+Variable.UDT.uPORcpt.Define("INV_QTY_REC",Float,"INV_QTY_REC")
+Variable.UDT.uPORcpt.Define("PO_COST",Float,"PO_COST")
+Variable.UDT.uPORcpt.Define("INV_COST",Float,"INV_COST")
+Variable.UDT.uPORcpt.Define("LOT",String,"LOT")
+Variable.UDT.uPORcpt.Define("HEAT",String,"HEAT")
+Variable.UDT.uPORcpt.Define("SERIAL",String,"SERIAL")
+Variable.UDT.uPORcpt.Define("INV_UM",String,"INV_UM")
+Variable.UDT.uPORcpt.Define("PO_UM",String,"PO_UM")
+Variable.UDT.uPORcpt.Define("WO",String,"WO")
+Variable.UDT.uPORcpt.Define("WO_SUFFIX",String,"WO_SUFFIX")
+Variable.UDT.uPORcpt.Define("WO_SEQ",String,"WO_SEQ")
+Variable.UDT.uPORcpt.Define("SO",String,"SO")
+Variable.UDT.uPORcpt.Define("SO_LINE",String,"SO_LINE")
+Variable.UDT.uPORcpt.Define("SO_SEQ",String,"SO_SEQ")
+Variable.UDT.uPORcpt.Define("PACKING_NO",String,"PACK_LIST")
+Variable.UDT.uPORcpt.Define("VENDOR",String,"VENDOR_NO")
+Variable.UDT.uPORcpt.Define("VENDOR_NAME",String,"VENDOR_NAME")
+Variable.UDT.uPORcpt.Define("CLOSE_FLAG",Boolean,"CLOSE_FLAG")
+Variable.UDT.uPORcpt.Define("GL_ACCOUNT",String,"ACCOUNT")
+Variable.UDT.uPORcpt.Define("USER_1",String,"USER_1")
+Variable.UDT.uPORcpt.Define("USER_2",String,"USER_2")
+Variable.UDT.uPORcpt.Define("USER_3",String,"USER_3")
+Variable.UDT.uPORcpt.Define("USER_4",String,"USER_4")
+Variable.UDT.uPORcpt.Define("USER_5",String,"USER_5")
+Variable.UDT.uPORcpt.Define("USER_ID",String,"USER_ID")
+Variable.UDT.uPORcpt.Define("CUST_PO",String,"CUST_PO")
+Variable.UDT.uPORcpt.Define("SORT_CODE",String,"SORT_CODE")
+Variable.UDT.uPORcpt.Define("MFG_NAME",String,"MFG_NAME")
+Variable.UDT.uPORcpt.Define("MFG_PART",String,"MFG_PART")
+Variable.UDT.uPORcpt.Define("CUST_PART",String,"CUST_PART")
+Variable.UDT.uPORcpt.Define("EXCH_COST",Float,"EXCH_COST")
+Variable.UDT.uPORcpt.Define("EXCH_RATE",Float,"EXCH_RATE")
+Variable.UDT.uPORcpt.Define("EXCH_DATE",Date,"EXCH_DATE")
+Variable.UDT.uPORcpt.Define("EXCH_CURR",String,"EXCH_CURR")
+Variable.UDT.uPORcpt.Define("REQ_NO",String,"REQ_NO")
+Variable.UDT.uPORcpt.Define("REQ_LINE",String,"REQ_LINE")
+Variable.UDT.uPORcpt.Define("DEPT",String,"DEPT")
+Variable.UDT.uPORcpt.Define("WARRANTY_MONTHS",Long,"WARRANTY_MONTHS")
+Variable.UDT.uPORcpt.Define("EXPIRE_DATE",Date,"EXPIRE_DATE")
+Variable.UDT.uPORcpt.Define("LOT_USER_1",String,"LOT_USER_1")
+Variable.UDT.uPORcpt.Define("LOT_USER_2",String,"LOT_USER_2")
+Variable.UDT.uPORcpt.Define("LOT_USER_3",String,"LOT_USER_3")
+Variable.UDT.uPORcpt.Define("LOT_USER_4",String,"LOT_USER_4")
+Variable.UDT.uPORcpt.Define("LOT_USER_5",String,"LOT_USER_5")
+Variable.UDT.uPORcpt.Define("LOT_USER_6",String,"LOT_USER_6")
+Variable.UDT.uPORcpt.Define("LOT_USER_7",String,"LOT_USER_7")
+Variable.UDT.uPORcpt.Define("LOT_USER_8",String,"LOT_USER_8")
+Variable.UDT.uPORcpt.Define("LOT_USER_9",String,"LOT_USER_9")
+Variable.UDT.uPORcpt.Define("BIN",String,"BIN")
+Variable.UDT.uPORcpt.Define("BIRUNID",Long,"RUNID")
+Variable.UDT.uPORcpt.Define("QTY_ON_LABEL",Float,"QTY_ON_LABEL")
+Variable.UDT.uPORcpt.Define("ONHAND_TOTAL",Float,ONHAND_TOTAL)
+Variable.UDT.uPORcpt.Define("ONHAND_LENGTH",Float,ONHAND_LENGTH)
+Variable.UDT.uPORcpt.Define("ONHAND_WIDTH",Float,ONHAND_WIDTH)
+Variable.UDT.uPORcpt.Define("UM_LEN",String,UM_LEN)
+Variable.UDT.uPORcpt.Define("UM_WID",String,UM_WID)
+Variable.uGlobal.uPORcpt.Declare("uPORcpt")
+Variable.Global.bSentinel.Declare(Boolean,False)
+Program.Sub.Preflight.End
+
+Program.Sub.Main.Start
+F.Intrinsic.Control.SetErrorHandler("Main_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+
+F.ODBC.Connection!con.OpenConnection(V.Ambient.PDSN,V.Ambient.PUser,V.Ambient.PPass)
+F.Intrinsic.Control.CallSub(Loaddata)
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("Main_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+    Function.Intrinsic.String.Concat("Project: GCG_7298_PORCPT_2818.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+    F.Intrinsic.UI.Msgbox(V.Local.sError)
+    F.Intrinsic.Control.CallSub(Unload)
+Function.Intrinsic.Control.EndIf
+
+Program.Sub.Main.End
+
+Program.Sub.Unload.Start
+F.Intrinsic.Control.SetErrorHandler("Unload_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+
+F.ODBC.Connection!con.Close
+F.Intrinsic.Control.End
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("Unload_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+    Function.Intrinsic.String.Concat("Project: GCG_7298_PORCPT_2818.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+    F.Intrinsic.UI.Msgbox(V.Local.sError)
+    F.Intrinsic.Control.End
+Function.Intrinsic.Control.EndIf
+
+
+Program.Sub.Unload.End
+
+Program.Sub.LoadData.Start
+F.Intrinsic.Control.SetErrorHandler("LoadData_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+V.Local.sSql.Declare(String)
+V.Local.iUB.Declare(Long)
+
+'Getting run ID passed down
+V.Global.iBIRunID.Set(V.Passed.DATA-GAB-0)
+'Getting log ID passed down
+V.Global.iBILogID.Set(V.Passed.DATA-GAB-1)
+'Getting Sentinel flag passed down
+Variable.Global.bSentinel.Set(Variable.Passed.DATA-GAB-2)
+
+V.uGlobal.uPORcpt.Redim(-1,-1)
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uPORcpt!ONHAND_LENGTH,"")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uPORcpt!ONHAND_WIDTH,"")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uPORcpt!ONHAND_TOTAL,"")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uPORcpt!UM_WID,"")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uPORcpt!UM_LEN,"")
+'Loading data from Y table, as being label being printed from Menu, Selecting all fields as all fields are transferred over from Y table to Z table
+F.Intrinsic.String.Build("Select * From Y_PU_PORCPT where RUNID = {0}",V.Global.iBIRunID,V.Local.sSql)
+F.ODBC.Connection!con.OpenLocalRecordsetRO("rst",V.Local.sSql)
+F.Intrinsic.Variable.LoadUDTFromRecordset("con","rst","V.uGlobal.uPORcpt",True,0)
+F.ODBC.con!rst.Close
+
+F.Intrinsic.Control.If(V.uGlobal.uPORcpt.UBound,>,-1)
+    'Checking to see if sequence being printed is Codesoft label
+    Function.Intrinsic.Control.If(Variable.Global.bSentinel,=,True)
+        'Stopping Logging
+        F.Global.BI.StopLogging(v.Global.iBILogID)
+
+	'Get fields from ITEM_MAST_DIMS for each part.
+	F.Intrinsic.Control.CallSub(Getaddldata)
+
+	F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uPORcpt!ONHAND_LENGTH,"ONHAND_LENGTH")
+	F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uPORcpt!ONHAND_WIDTH,"ONHAND_WIDTH")
+	F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uPORcpt!ONHAND_TOTAL,"ONHAND_TOTAL")
+	F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uPORcpt!UM_WID,"UM_WID")
+	F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uPORcpt!UM_LEN,"UM_LEN")
+        'Printing Codesoft label
+        F.Global.BI.PrintCodesoftLabelFromUDT(v.Global.iBIRunID,v.Global.iBILogID,"uGlobal.uPORcpt","","",True)
+    Function.Intrinsic.Control.Else
+        'Setting field refs of UDT for Z table fields that don't match Y table field names
+        F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uPORcpt!BIRUNID,"BIRUNID")
+        F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uPORcpt!RECEIVER_NO,"RECEIVER_NO")
+        F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uPORcpt!PACKING_NO,"PACKING_NO")
+        F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uPORcpt!GL_ACCOUNT,"GL_ACCOUNT")
+
+        'Opening table and writing data out for Crystal/Bartender
+        F.ODBC.Connection!con.OpenLocalRecordsetRW("rst","Z_PU_PORCPT")
+        F.Intrinsic.Variable.saveudttorecordset("con","rst","v.uglobal.uPORcpt")
+        F.ODBC.con!rst.Close
+
+        'Stopping Logging
+        F.Global.BI.StopLogging(v.Global.iBILogID)
+
+        'Printing Crystal Report
+        F.Intrinsic.Control.CallSub(Callbi)
+    Function.Intrinsic.Control.EndIf
+F.Intrinsic.Control.EndIf
+
+'Deleteing Y table records
+F.Intrinsic.String.Build("Delete Y_PU_PORCPT where RUNID = {0}",V.Global.iBIRunID,V.Local.sSql)
+F.ODBC.Connection!con.Execute(V.Local.sSql)
+
+Function.Intrinsic.Control.CallSub(Unload)
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("LoadData_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+    Function.Intrinsic.String.Concat("Project: GCG_7298_PORCPT_2818.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+    F.Intrinsic.UI.Msgbox(V.Local.sError)
+    F.Intrinsic.Control.CallSub(Unload)
+Function.Intrinsic.Control.EndIf
+
+
+Program.Sub.LoadData.End
+
+Program.Sub.CallBI.Start
+F.Intrinsic.Control.SetErrorHandler("CallBI_Err")
+F.Intrinsic.Control.ClearErrors
+
+Variable.Local.sError.Declare(String)
+Variable.Local.iRet.Declare(Long)
+
+Function.Global.BI.RunReportPreProcessor(V.Global.iBIRunID,V.Global.iBILogID,"","","",-1,True,"",-1,"",-1,"","",V.Local.iRet)
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("CallBI_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+    Function.Intrinsic.String.Concat("Project: GCG_7298_PORCPT_2818.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+    F.Intrinsic.UI.Msgbox(V.Local.sError)
+    F.Intrinsic.Control.CallSub(Unload)
+Function.Intrinsic.Control.EndIf
+
+
+Program.Sub.CallBI.End
+
+Program.Sub.GetAddlData.Start
+F.Intrinsic.Control.SetErrorHandler("GetAddData_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+
+V.Local.i.Declare(Long)
+V.Local.sSql.Declare(String)
+V.Local.sRet.Declare(String)
+V.Local.sDesc.Declare(String)
+V.Local.iBIRunID.Declare(Long)
+V.Local.iRptID.Declare(Long)
+V.Local.iBILogID.Declare(Long)
+
+F.Intrinsic.Control.For(V.Local.i,V.uGlobal.uPORcpt.LBound,V.uGlobal.uPORcpt.UBound,1)
+	'Get length,width,total from ITEM_MAST_DIMS linked on part,loc,lot,bin,heat,serial
+	F.Intrinsic.String.Build("Select * from v_ITEM_MAST_DIMS where PART = '{0}' and LOCN = '{1}' and LOT = '{2}' and BIN = '{3}' and HEAT = '{4}' and SERIAL_NUMBER = '{5}' ",V.uGlobal.uPORcpt(v.Local.i)!PART,V.uGlobal.uPORcpt(v.Local.i)!LOCN,V.uGlobal.uPORcpt(v.Local.i)!LOT,V.uGlobal.uPORcpt(v.Local.i)!BIN,V.uGlobal.uPORcpt(v.Local.i)!HEAT,V.uGlobal.uPORcpt(v.Local.i)!SERIAL,V.Local.sSql)
+	F.ODBC.Connection!con.OpenRecordsetRO("rstDims",V.Local.sSql)
+	F.Intrinsic.Control.If(V.ODBC.con!rstDims.EOF,<>,True)
+		V.uGlobal.uPORcpt(v.Local.i)!ONHAND_LENGTH.Set(V.ODBC.con!rstDims.FieldValFloat!ONHAND_LENGTH)
+		V.uGlobal.uPORcpt(v.Local.i)!ONHAND_WIDTH.Set(V.ODBC.con!rstDims.FieldValFloat!ONHAND_WIDTH)
+		V.uGlobal.uPORcpt(v.Local.i)!ONHAND_TOTAL.Set(V.ODBC.con!rstDims.FieldValFloat!ONHAND_TOTAL)
+		V.uGlobal.uPORcpt(v.Local.i)!UM_LEN.Set(V.ODBC.con!rstDims.FieldValTrim!UM_LENGTH)
+		V.uGlobal.uPORcpt(v.Local.i)!UM_WID.Set(V.ODBC.con!rstDims.FieldValTrim!UM_WIDTH)
+		
+	F.Intrinsic.Control.EndIf
+	F.ODBC.con!rstDims.Close
+
+	'Get Desc
+	F.Intrinsic.String.Build("Select * from v_INVENTORY_MSTR where PART = '{0}' and LOCATION = '{1}'",V.uGlobal.uPORcpt(v.Local.i)!PART,V.uGlobal.uPORcpt(v.Local.i)!LOCN,V.Local.sSql)
+	F.ODBC.Connection!Con.OpenRecordsetRO("rstL",V.Local.sSql)
+	F.Intrinsic.Control.If(V.ODBC.Con!rstL.EOF,<>,True)
+		V.Local.sDesc.Set(V.ODBC.Con!rstL.FieldValTrim!DESCRIPTION)
+	F.Intrinsic.Control.EndIf
+	F.ODBC.Con!rstL.Close
+
+	'Get alt 1 and Alt 2 description
+	F.Intrinsic.String.Build("Select * from v_INVENTORY_MST2 where PART = '{0}' and LOCATION = '{1}'",V.uGlobal.uPORcpt(v.Local.i)!LOCN,V.Local.sSql)
+	F.ODBC.Connection!Con.OpenRecordsetRO("rstL",V.Local.sSql)
+	F.Intrinsic.Control.If(V.ODBC.Con!rstL.EOF,<>,True)
+		F.Intrinsic.String.Build("{0} {1} {2}",V.Local.sDesc.Trim,V.ODBC.Con!rstL.FieldValTrim!DESCRIPTION_2,V.ODBC.Con!rstL.FieldValTrim!DESCRIPTION_3,V.Local.sDesc)
+	F.Intrinsic.Control.EndIf
+	F.ODBC.Con!rstL.Close
+
+	'Get Extended Desciption
+	F.Intrinsic.String.Build("select ltrim(rtrim(TEXT_LINE1))+ ' ' + ltrim(rtrim(TEXT_LINE2)) + ' ' + ltrim(rtrim(TEXT_LINE3)) + ' ' + ltrim(rtrim(TEXT_LINE4)) + ' ' + ltrim(rtrim(TEXT_LINE5)) as TEXT_PART from v_EXTRA_TEXT where PART = '{0}' Order by TEXT_SEQUENCE",V.uGlobal.uPORcpt(v.Local.i)!PART,V.Local.sSql)
+	F.ODBC.Connection!Con.OpenRecordsetRO("rstL",V.Local.sSql)
+	F.Intrinsic.Control.If(V.ODBC.Con!rstL.EOF,<>,True)
+		F.Intrinsic.Control.DoUntil(V.ODBC.Con!rstL.EOF,=,True)
+			F.Intrinsic.String.Build("{0} {1}",V.Local.sRet,V.ODBC.Con!rstL.FieldValTrim!TEXT_PART,V.Local.sRet)
+			F.ODBC.Con!rstL.MoveNext
+		F.Intrinsic.Control.Loop
+	F.Intrinsic.Control.EndIf
+	F.ODBC.Con!rstL.Close
+	
+	'Build entire description including Description,Alt 1, Alt 2, Extra Text
+	F.Intrinsic.Control.If(V.Local.sRet.Trim,<>,"")
+		F.Intrinsic.String.Build("{0} {1}",V.Local.sDesc.Trim,V.Local.sRet,V.Local.sDesc)
+	F.Intrinsic.Control.EndIf
+
+	'Set final Entire Description
+	V.uGlobal.uPORcpt(v.Local.i)!DESCR.Set(V.Local.sDesc)
+
+	
+
+F.Intrinsic.Control.Next(V.Local.i)
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("GetAddData_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GCG_7298_PORCPT_2818.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+Function.Intrinsic.Control.EndIf
+
+
+Program.Sub.GetAddlData.End
+
+Program.Sub.Comments.Start
+${$0$}$BIR_PU_PO_Receipt$}$Mitch$}$3/25/2014
+Program.Sub.Comments.End
+
